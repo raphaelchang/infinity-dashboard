@@ -1,4 +1,5 @@
 $(function() {
+	var connected = false;
 	var socket = io();
 	socket.emit('list ports');
 	$('#listports').click(function() {
@@ -24,4 +25,16 @@ $(function() {
 	socket.on('serial receive', function(data) {
 		console.log(data);
 	});
+	socket.on('connect port', function() {
+		connected = true;
+		$('#status').addClass("inverted blue");
+		$('#status-text').html("Status:<br />Connected");
+	});
+
+	$('.menu .item')
+	  .tab()
+	;
+	$('.ui.dropdown')
+	  .dropdown()
+	;
 });

@@ -34,6 +34,7 @@ io.on('connection', function(socket) {
 
 		port.on('open', function () {
 			console.log('Connected to', portName);
+			socket.emit('connect port');
 			socket.on('serial send', function(data) {
 				port.write(data + '\r\n', function(err, bytesWritten) {
 				if (err) {

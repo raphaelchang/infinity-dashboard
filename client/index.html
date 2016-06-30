@@ -10,9 +10,51 @@
 	<script src="client.js"></script>
 </head>
 <body>
-	<h1>rESC GUI</h1>
-	<select id="ports"></select><br />
-	<input id="connect" type="button" value="Connect" /><input id="listports" type="button" value="Refresh" /><br />
-	<input id="input" type="text" size="100" />
+	<div id="container">
+		<h1 class="ui header">rESC GUI</h1>
+		<div class="ui grid">
+			<div class="thirteen wide column">
+				<div class="ui top attached tabular menu">
+					<a class="item active" data-tab="overview"><i class="dashboard icon"></i> Overview</a>
+					<a class="item" data-tab="motor"><i class="settings icon"></i> Motor Settings</a>
+					<a class="item" data-tab="control"><i class="game icon"></i> Control Settings</a>
+					<a class="item" data-tab="data"><i class="line chart icon"></i> Real-time Data</a>
+					<a class="item" data-tab="console"><i class="terminal icon"></i> Console</a>
+				</div>
+				<div class="ui bottom attached tab segment active" data-tab="overview">
+					<div class="ui input">
+						<input id="input" type="text" size="100" />
+					</div>
+				</div>
+				<div class="ui bottom attached tab segment" data-tab="motor">
+				Second
+				</div>
+				<div class="ui bottom attached tab segment" data-tab="control">
+				Third
+				</div>
+				<div class="ui bottom attached tab segment" data-tab="data">
+				Third
+				</div>
+				<div class="ui bottom attached tab segment" data-tab="console">
+				Third
+				</div>
+			</div>
+			<div class="three wide column" style="margin-top: 42px">
+				<div class="ui attached segment">
+				<div class="ui grid">
+					<div class="sixteen wide column">
+						<select class="ui selection dropdown" id="ports"></select>
+						<div class="ui button" id="connect">Connect</div><div class="ui button" id="listports">Refresh</div><br />
+					</div>
+					<div class="four wide column">
+						<div id="status" class="ui circular segment"></div>
+					</div>
+					<div class="twelve wide column">
+						<h4 class="ui header" id="status-text">Status:<br />Not Connected</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
