@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <title>rESC GUI</title>
+</head>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+$(function() {
+	var socket = io();
+	socket.emit('list ports');
+	$('#listports').click(function() {
+		socket.emit('list ports');
+	});
+	$('#connect').click(function() {
+		socket.emit('connect port', $('#ports option:selected').val());
+	});
+	$('#input').keyup(function(e) {
+		if (e.keyCode == 13) {
+			socket.emit('serial send', $('#input').val());
+			$('#input').val('');
+		}
+	});
+
+	socket.on('list ports', function(list) {
+		$('#ports').empty();
+		list.list.forEach(function(port) {
+			var option = $('<option></option>').attr("value", port).text(port);
+			$('#ports').append(option);
+		});
+	});
+	socket.on('serial receive', function(data) {
+		console.log(data);
+	});
+});
+</script>
+<body>
+  <h1>rESC GUI</h1>
+  <select id="ports"></select><br />
+  <input id="connect" type="button" value="Connect" /><input id="listports" type="button" value="Refresh" /><br />
+  <input id="input" type="text" size="100" />
+</body>
+</html>

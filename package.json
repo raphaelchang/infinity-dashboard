@@ -1,0 +1,27 @@
+{
+  "name": "resc-gui",
+  "version": "1.0.0",
+  "description": "GUI for rESC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raphaelchang/resc-gui.git"
+  },
+  "author": "Raphael Chang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raphaelchang/resc-gui/issues"
+  },
+  "homepage": "https://github.com/raphaelchang/resc-gui#readme",
+  "dependencies": {
+    "compression": "^1.6.2",
+    "express": "^4.9.5",
+    "nodemon": "^1.9.2",
+    "serialport": "^3.1.2",
+    "socket.io": "^1.4.8"
+  }
+}
