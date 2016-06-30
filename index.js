@@ -12,7 +12,7 @@ var SerialPort = serialport.SerialPort;
 app.use(compression());
 
 // Add static middleware
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/client'));
 
 io.on('connection', function(socket) {
 	console.log('a user connected');
