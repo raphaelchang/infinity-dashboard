@@ -37,4 +37,16 @@ $(function() {
 	$('.ui.dropdown')
 	  .dropdown()
 	;
+	$("#console").bind('keydown', function(e) {
+		$("#cursor").replaceWith($("#cursor")); // Freeze cursor blinking when typing
+		if (e.which === 8)
+		{
+			$("#console #input").text($("#console #input").text().substring(0, $("#console #input").text().length - 1))
+		}
+		else
+		{
+			$("#console #input").append(String.fromCharCode(e.which));
+		}
+		e.preventDefault();
+	});
 });
