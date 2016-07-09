@@ -1,5 +1,6 @@
 $(function() {
 	var connected = false;
+	var waiting = false;
 	var socket = io();
 	socket.emit('list ports');
 	$('#listports').click(function() {
@@ -24,6 +25,22 @@ $(function() {
 	});
 	socket.on('serial receive', function(data) {
 		console.log(data);
+		if (waiting)
+		{
+			if (data == '\r')
+			{
+				$("#cmd").html(inputReset);
+				$("#console").scrollTop(999999999);
+				cursor = $(".cursor");
+				historyIndex = 0;
+				waiting = false;
+			}
+			else
+			{
+				$("#output").append(data);
+				$("#output").append("<br />");
+			}
+		}
 	});
 	socket.on('connect port', function() {
 		connected = true;
@@ -43,8 +60,11 @@ $(function() {
 	var currentCommand;
 	var cursor = $(".cursor");
 	$("#console").bind("keypress", function(e) {
-		$(".cursor").replaceWith($(".cursor")); // Freeze cursor blinking when typing
-		console.log(e.which);
+		if (waiting)
+		{
+			return;
+		}
+		cursor.replaceWith(cursor); // Freeze cursor blinking when typing
 		e.preventDefault();
 		if (e.which == 32)
 		{
@@ -56,8 +76,11 @@ $(function() {
 		}
 	});
 	$("#console").bind("keydown", function(e) {
-		console.log(e.which);
-		$(".cursor").replaceWith($(".cursor")); // Freeze cursor blinking when typing
+		if (waiting)
+		{
+			return;
+		}
+		cursor.replaceWith(cursor); // Freeze cursor blinking when typing
 		if (e.keyCode == 8) {
 			cursor.prev().remove();
 			e.preventDefault();
@@ -72,17 +95,16 @@ $(function() {
 		else if (e.which == 13)
 		{
 			cursor.removeClass('cursor');
-			console.log($("#cmd #input").html());
-			if ($("#cmd #input").html() != '<span class="">&nbsp;</span>')
-			{
-				history.push($("#cmd #input").html());
-			}
 			$("#output").append($("#cmd").html());
 			$("#output").append("<br />");
-			$("#cmd").html(inputReset);
-			$("#console").scrollTop(999999999);
-			cursor = $(".cursor");
-			historyIndex = 0;
+			if ($.trim($("#cmd #input").text()) != '')
+			{
+				history.push($("#cmd #input").html());
+				var trimmed = $.trim($("#cmd #input").text()).replace(/\s+/g, " ");
+				socket.emit('serial send', trimmed);
+				$("#cmd").html('');
+				waiting = true;
+			}
 			e.preventDefault();
 		}
 		else if (e.which == 37)

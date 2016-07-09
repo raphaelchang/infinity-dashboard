@@ -36,14 +36,24 @@ io.on('connection', function(socket) {
 			console.log('Connected to', portName);
 			socket.emit('connect port');
 			socket.on('serial send', function(data) {
-				port.write(data + '\r\n', function(err, bytesWritten) {
+				var buffer = new Buffer('P ' + data + '\n', "ascii");
+				buffer[1] = 0x00;
+				port.write(buffer, function(err, bytesWritten) {
 				if (err) {
 					return console.log('Error: ', err.message);
 				}
 				});
 			})
 			port.on('data', function(data){
-			  	socket.emit('serial receive', data);
+				console.log(data);
+				if (data[0] == 'P' && data[1] == '0')
+				{
+				  	socket.emit('serial receive', data.substring(2));
+				}
+			});
+			socket.on('disconnect', function()
+			{
+				port.close();
 			});
 		});
 	});
