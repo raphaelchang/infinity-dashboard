@@ -7,7 +7,14 @@ $(function() {
 		socket.emit('list ports');
 	});
 	$('#connect').click(function() {
-		socket.emit('connect port', $('#ports option:selected').val());
+		if (!connected)
+		{
+			socket.emit('connect port', $('#ports option:selected').val());
+		}
+		else
+		{
+			socket.emit('disconnect port');
+		}
 	});
 	$('#input').keyup(function(e) {
 		if (e.keyCode == 13) {
@@ -39,14 +46,30 @@ $(function() {
 			{
 				$("#output").append(data);
 				$("#output").append("<br />");
+				$("#console").scrollTop(999999999);
 			}
 		}
 	});
 	socket.on('connect port', function() {
 		connected = true;
+		$("#cmd").html(inputReset);
+		$("#console").scrollTop(999999999);
+		cursor = $(".cursor");
+		historyIndex = 0;
+		waiting = false;
 		$('#status').addClass("inverted blue");
 		$('#status-text').html("Status:<br />Connected");
+		$('#connect').text("Disconnect");
 	});
+	socket.on('disconnect port', function() {
+		connected = false;
+		$('#status').removeClass("inverted");
+		$('#status').removeClass("blue");
+		$('#status-text').html("Status:<br />Not Connected");
+		$('#connect').text("Connect");
+		$('#output').html('');
+		$("#cmd").html('<span id="input"><span class="cursor noblink">&nbsp;</span></span>');
+	})
 
 	$('.menu .item')
 	  .tab()
@@ -60,7 +83,7 @@ $(function() {
 	var currentCommand;
 	var cursor = $(".cursor");
 	$("#console").bind("keypress", function(e) {
-		if (waiting)
+		if (waiting || !connected)
 		{
 			return;
 		}
@@ -76,8 +99,20 @@ $(function() {
 		}
 	});
 	$("#console").bind("keydown", function(e) {
+		if (!connected)
+		{
+			return;
+		}
 		if (waiting)
 		{
+			if (e.ctrlKey && e.which == 67)
+			{
+				$("#cmd").html(inputReset);
+				$("#console").scrollTop(999999999);
+				cursor = $(".cursor");
+				historyIndex = 0;
+				waiting = false;
+			}
 			return;
 		}
 		cursor.replaceWith(cursor); // Freeze cursor blinking when typing
@@ -97,13 +132,22 @@ $(function() {
 			cursor.removeClass('cursor');
 			$("#output").append($("#cmd").html());
 			$("#output").append("<br />");
+			$("#console").scrollTop(999999999);
 			if ($.trim($("#cmd #input").text()) != '')
 			{
 				history.push($("#cmd #input").html());
 				var trimmed = $.trim($("#cmd #input").text()).replace(/\s+/g, " ");
+				trimmed = trimmed.replace(/[^\x20-\x7E]+/g, '');
 				socket.emit('serial send', trimmed);
-				$("#cmd").html('');
+				$("#cmd").html('<span class="cursor noblink">&nbsp;</span>');
 				waiting = true;
+			}
+			else
+			{
+				$("#cmd").html(inputReset);
+				cursor = $(".cursor");
+				historyIndex = 0;
+				waiting = false;
 			}
 			e.preventDefault();
 		}

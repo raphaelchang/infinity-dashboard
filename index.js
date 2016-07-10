@@ -29,31 +29,56 @@ io.on('connection', function(socket) {
 	socket.on('connect port', function(portName) {
 		var port = new SerialPort(portName, {
 			parser: serialport.parsers.readline('\n'),
-			baudRate: 115200
+			baudRate: 115200,
+			lock: false
 			});
-
 		port.on('open', function () {
 			console.log('Connected to', portName);
-			socket.emit('connect port');
-			socket.on('serial send', function(data) {
-				var buffer = new Buffer('P ' + data + '\n', "ascii");
-				buffer[1] = 0x00;
-				port.write(buffer, function(err, bytesWritten) {
+			var handshake = new Buffer(3);
+			handshake[0] = 80;
+			handshake[1] = 0x00;
+			handshake[2] = 10;
+			port.write(handshake, function(err, bytesWritten) {
 				if (err) {
 					return console.log('Error: ', err.message);
 				}
+			});
+			socket.emit('connect port');
+			socket.on('serial send', function(data) {
+				console.log(data);
+				var buffer = new Buffer(data + '\n', "ascii");
+				console.log(buffer);
+				var header = new Buffer(2);
+				header[0] = 80;
+				header[1] = 0x01;
+				var send = Buffer.concat([header, buffer], header.length + buffer.length);
+				console.log(send);
+				port.write(send, function(err, bytesWritten) {
+					if (err) {
+						return console.log('Error: ', err.message);
+					}
 				});
 			})
 			port.on('data', function(data){
 				console.log(data);
-				if (data[0] == 'P' && data[1] == '0')
+				if (data[0] == 'P' && data[1] == '1')
 				{
 				  	socket.emit('serial receive', data.substring(2));
 				}
 			});
 			socket.on('disconnect', function()
 			{
-				port.close();
+				port.close(function(err)
+				{
+					
+				});
+			});
+			socket.on('disconnect port', function()
+			{
+				port.close(function(err)
+				{
+					socket.emit('disconnect port');
+				});
 			});
 		});
 	});
