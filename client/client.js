@@ -77,6 +77,10 @@ $(function() {
     $('.ui.dropdown')
         .dropdown()
         ;
+    $('#duty').on('change', function()
+    {
+        socket.emit('set duty', $('#duty').val());
+    });
     var history = [];
     var inputReset = '<span>resc>&nbsp;</span><span id="input"><span class="cursor">&nbsp;</span></span>';
     var historyIndex = 0;

@@ -28,16 +28,35 @@ io.on('connection', function(socket) {
     });
     socket.on('connect port', function(portName) {
         var port = new SerialPort(portName, {
-            parser: serialport.parsers.readline('\n'),
+            parser: serialport.parsers.byteDelimiter(0x0A),
             baudRate: 115200,
             lock: false
         });
         port.on('open', function () {
+            function hex(num) {
+                return String.fromCharCode(num);
+            }
+            function hexString(array) {
+                return array
+                    .map(hex)
+                    .join('');
+            }
+            var Cmd = {
+                START: 0x50,
+                END: 0x0A,
+                PACKET_CONNECT: 0x00,
+                PACKET_CONSOLE: 0x01,
+                PACKET_USB_OVERRIDE_START: 0x02,
+                PACKET_USB_OVERRIDE_END: 0x03,
+                PACKET_SET_DUTY_CYCLE: 0x04,
+                PACKET_SET_CURRENT: 0x05
+            };
+
             console.log('Connected to', portName);
             var handshake = new Buffer(3);
-            handshake[0] = 80;
-            handshake[1] = 0x00;
-            handshake[2] = 10;
+            handshake[0] = Cmd.START;
+            handshake[1] = Cmd.PACKET_CONNECT;
+            handshake[2] = Cmd.END;
             port.write(handshake, function(err, bytesWritten) {
                 if (err) {
                     return console.log('Error: ', err.message);
@@ -49,8 +68,8 @@ io.on('connection', function(socket) {
                 var buffer = new Buffer(data + '\n', "ascii");
                 console.log(buffer);
                 var header = new Buffer(2);
-                header[0] = 80;
-                header[1] = 0x01;
+                header[0] = Cmd.START;
+                header[1] = Cmd.PACKET_CONSOLE;
                 var send = Buffer.concat([header, buffer], header.length + buffer.length);
                 console.log(send);
                 port.write(send, function(err, bytesWritten) {
@@ -58,14 +77,30 @@ io.on('connection', function(socket) {
                         return console.log('Error: ', err.message);
                     }
                 });
-            })
-            port.on('data', function(data){
-                console.log(data);
-                if (data[0] == 'P' && data[1] == '1')
-                {
-                    socket.emit('serial receive', data.substring(2));
-                }
             });
+            socket.on('set duty', function(data) {
+                console.log(data);
+                var buffer = new Buffer(5);
+                buffer[0] = Cmd.START;
+                buffer[1] = Cmd.PACKET_SET_DUTY_CYCLE;
+                buffer[2] = (data & 0xFF00) >> 8;
+                buffer[3] = (data & 0x00FF);
+                buffer[4] = Cmd.END;
+                port.write(buffer, function(err, bytesWritten) {
+                    if (err) {
+                        return console.log('Error: ', err.message);
+                    }
+                });
+            });
+            port.on('data', function(data)
+                    {
+                        console.log(data);
+                        console.log(hexString(data.slice(2)));
+                        if (data[0] == Cmd.START && data[1] == Cmd.PACKET_CONSOLE)
+                        {
+                            socket.emit('serial receive', hexString(data.slice(2, -1)));
+                        }
+                    });
             socket.on('disconnect', function()
                     {
                         port.close(function(err)
