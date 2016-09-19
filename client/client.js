@@ -49,7 +49,7 @@ $(function() {
     $('#connect').click(function() {
         if (!connected)
         {
-            console.log($('#ports').dropdown('get value'))
+            console.log($('#ports').dropdown('get value'));
             socket.emit('connect port', $('#ports').dropdown('get value'));
         }
         else
@@ -70,6 +70,11 @@ $(function() {
             var option = $('<div class="item" value="' + port + '"></div>').text(port);
             $('#ports .menu').append(option);
         });
+        if (list.list.indexOf($('#ports').dropdown('get value')) == -1)
+        {
+            $('#ports').dropdown('set value', '');
+            $('#ports .text').text("Select Port...");
+        }
     });
     socket.on('serial receive', function(data) {
         console.log(data);
@@ -113,6 +118,7 @@ $(function() {
         $("#cmd").html('<span id="input"><span class="cursor noblink">&nbsp;</span></span>');
         $("#voltage").html("0.0");
         $("#temperature").html("0.0");
+        socket.emit('list ports');
     });
 
     socket.on('voltage', function(data) {

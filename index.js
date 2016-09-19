@@ -7,6 +7,7 @@ var compression = require('compression');
 var io = require('socket.io').listen(server);
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
+var usb = require('usb');
 
 // Add content compression middleware
 app.use(compression());
@@ -20,6 +21,21 @@ io.on('connection', function(socket) {
         serialport.list(function (err, ports) {
             var port_list = [];
             ports.forEach(function(port) {
+                if (port.manufacturer != "rESC Virtual COM Port")
+                    return;
+                port_list.push(port.comName);
+                console.log(port.comName);
+            });
+            socket.emit('list ports', {list: port_list});
+        });
+    });
+    usb.on('detach', function(device) {
+        console.log('device disconnected');
+        serialport.list(function (err, ports) {
+            var port_list = [];
+            ports.forEach(function(port) {
+                if (port.manufacturer != "rESC Virtual COM Port")
+                    return;
                 port_list.push(port.comName);
                 console.log(port.comName);
             });
@@ -35,7 +51,9 @@ io.on('connection', function(socket) {
             lock: false
         });
 	port.on('open', function () {
-	    incr = 0;
+            port.on('disconnect', function(err) {
+                socket.emit('disconnect port');
+            });
 	    function hex(num) {
                 return String.fromCharCode(num);
             }

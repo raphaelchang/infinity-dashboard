@@ -513,7 +513,7 @@ static stDeviceListItem* GetSerialDevices() {
 
         if (device) {
           CFStringRef manufacturerAsCFString = (CFStringRef) IORegistryEntryCreateCFProperty(device,
-                      CFSTR(kUSBVendorString),
+                      CFSTR(kUSBProductString),
                       kCFAllocatorDefault,
                       0);
 
