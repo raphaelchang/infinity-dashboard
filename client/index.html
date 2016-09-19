@@ -3,10 +3,15 @@
     <head>
         <title>rESC GUI</title>
         <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="rickshaw/rickshaw.min.css">
+        <link rel="stylesheet" type="text/css" href="weather-icons/css/weather-icons.min.css">
         <link rel="stylesheet" type="text/css" href="style.css">
         <script src="jquery-1.10.2.min.js"></script>
         <script src="semantic/dist/semantic.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script src="rickshaw/vendor/d3.min.js"></script>
+        <script src="rickshaw/vendor/d3.layout.min.js"></script>
+        <script src="rickshaw/rickshaw.min.js"></script>
         <script src="client.js"></script>
     </head>
     <body>
@@ -31,6 +36,9 @@
                     <div class="ui bottom attached tab segment" data-tab="control">
                     </div>
                     <div class="ui bottom attached tab segment" data-tab="data">
+                        <div id="y_axis_left"></div>
+                        <div id="graph"></div>
+                        <div id="y_axis_right"></div>
                     </div>
                     <div class="ui bottom attached tab segment" data-tab="console">
                         <div id="console" tabindex="0">
@@ -43,16 +51,34 @@
                     <div class="ui attached segment">
                         <div class="ui grid">
                             <div class="sixteen wide column">
-                                <select class="ui selection dropdown" id="ports"></select>
-                                <div class="ui button" id="connect">Connect</div><div class="ui button" id="listports">Refresh</div><br />
+                                <div class="ui fluid selection dropdown" id="ports" style="margin-bottom: 0.73em">
+                                    <i class="usb icon"></i>
+                                    <span class="text">Select Port...</span>
+                                    <i class="dropdown icon" style="background-color: white"></i>
+                                    <div class="menu"></div>
+                                </div>
+                                <div class="ui labeled icon button" id="connect"><i class="plug icon"></i><span>Connect</span></div><div class="ui icon button" id="listports"><i class="refresh icon"></i></div><br />
                             </div>
-                            <div class="four wide column">
-                                <div id="status" class="ui circular segment"></div>
+                            <div class="sixteen wide column">
+                                <h4 id="status" class="ui header"><i class="grey circle icon"></i><div class="content">Not Connected</div></h4>
                             </div>
-                            <div class="twelve wide column">
-                                <h4 class="ui header" id="status-text">Status:<br />Not Connected</h4>
+                            <div class="sixteen wide column">
+                                <div class="ui relaxed list">
+                                    <div class="item">
+                                        <i class="lightning middle aligned icon"></i>
+                                        <div class="content">
+                                            Battery Voltage: <span id="voltage">0.0</span>V
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <i class="wi wi-thermometer middle aligned icon" style="font-family: weathericons"></i>
+                                        <div class="content">
+                                            Board Temperature: <span id="temperature">0.0</span>&#8451;
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<input type="range" id="duty" min="0" max="10000" value="0">-->
                             </div>
-                            <input type="range" id="duty" min="0" max="10000" value="0">
                         </div>
                     </div>
                 </div>

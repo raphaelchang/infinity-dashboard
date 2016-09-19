@@ -4,11 +4,6 @@
 	margin: 0 auto;
 }
 
-#status
-{
-	padding: 20px;
-}
-
 #console
 {
 	width: 100%;
@@ -46,4 +41,28 @@
       background-color: #bbb;
       color: #000;
   }
+}
+
+#ports {
+    white-space:nowrap;
+}
+
+#graph {
+    position: relative;
+    left: 30px;
+}
+
+#y_axis_left {
+    position: absolute;
+    top: 15px;
+    bottom: 0;
+    width: 30px;
+}
+
+#y_axis_right {
+    position: absolute;
+    top: 15px;
+    bottom: 0;
+    right: 0;
+    width: 45px;
 }

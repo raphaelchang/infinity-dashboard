@@ -2,14 +2,55 @@ $(function() {
     var connected = false;
     var waiting = false;
     var socket = io();
+
+    var scale1 = d3.scale.linear().domain([-2, 2]).nice();
+    var scale2 = d3.scale.linear().domain([-5000, 5000]).nice();
+    var series = new Rickshaw.Series.FixedDuration([{ name: 'current_q', color: 'blue', scale: scale1 }, { name: 'current_d', color: 'red', scale: scale1 }, { name: 'erpm', color: 'green', scale: scale2 }], undefined, {
+	timeInterval: 100,
+	timeBase: new Date().getTime() / 1000,
+	maxDataPoints: 250
+    }); 
+    var graph = new Rickshaw.Graph({
+	element: $("#graph")[0],
+	width: $("#graph").parent().width() - 90,
+	height: 400,
+        renderer: 'line',
+        series: series,
+        min: 'auto'
+    });
+    var y_ticks = new Rickshaw.Graph.Axis.Y.Scaled( {
+        graph: graph,
+        orientation: 'left',
+        scale: scale1,
+        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+        element: document.getElementById('y_axis_left')
+    } );
+    var y_ticks2 = new Rickshaw.Graph.Axis.Y.Scaled( {
+        graph: graph,
+        orientation: 'right',
+        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+        scale: scale2,
+        element: document.getElementById('y_axis_right')
+    } );
+    new Rickshaw.Graph.HoverDetail( {
+        graph: graph
+    });
+    graph.render();
+    socket.on('graph', function(data) {
+        graph.series.addData(data);
+        graph.render();
+        console.log(data);
+    });
+
     socket.emit('list ports');
     $('#listports').click(function() {
-        socket.emit('list ports');
+	socket.emit('list ports');
     });
     $('#connect').click(function() {
         if (!connected)
         {
-            socket.emit('connect port', $('#ports option:selected').val());
+            console.log($('#ports').dropdown('get value'))
+            socket.emit('connect port', $('#ports').dropdown('get value'));
         }
         else
         {
@@ -24,10 +65,10 @@ $(function() {
     });
 
     socket.on('list ports', function(list) {
-        $('#ports').empty();
+        $('#ports .menu').empty();
         list.list.forEach(function(port) {
-            var option = $('<option></option>').attr("value", port).text(port);
-            $('#ports').append(option);
+            var option = $('<div class="item" value="' + port + '"></div>').text(port);
+            $('#ports .menu').append(option);
         });
     });
     socket.on('serial receive', function(data) {
@@ -57,19 +98,29 @@ $(function() {
         cursor = $(".cursor");
         historyIndex = 0;
         waiting = false;
-        $('#status').addClass("inverted blue");
-        $('#status-text').html("Status:<br />Connected");
-        $('#connect').text("Disconnect");
+        $('#status i').removeClass("grey");
+        $('#status i').addClass("blue");
+        $('#status div').text("Connected");
+        $('#connect span').text("Disconnect");
     });
     socket.on('disconnect port', function() {
         connected = false;
-        $('#status').removeClass("inverted");
-        $('#status').removeClass("blue");
-        $('#status-text').html("Status:<br />Not Connected");
-        $('#connect').text("Connect");
+        $('#status i').removeClass("blue");
+        $('#status i').addClass("grey");
+        $('#status div').text("Not Connected");;
+        $('#connect span').text("Connect");
         $('#output').html('');
         $("#cmd").html('<span id="input"><span class="cursor noblink">&nbsp;</span></span>');
-    })
+        $("#voltage").html("0.0");
+        $("#temperature").html("0.0");
+    });
+
+    socket.on('voltage', function(data) {
+        $("#voltage").html(data);
+    });
+    socket.on('temperature', function(data) {
+        $("#temperature").html(data);
+    });
 
     $('.menu .item')
         .tab()
