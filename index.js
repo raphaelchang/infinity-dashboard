@@ -21,7 +21,7 @@ io.on('connection', function(socket) {
         serialport.list(function (err, ports) {
             var port_list = [];
             ports.forEach(function(port) {
-                if (port.manufacturer != "rESC Virtual COM Port")
+                if (port.manufacturer != "Infinity Virtual COM Port")
                     return;
                 port_list.push(port.comName);
                 console.log(port.comName);
@@ -34,7 +34,7 @@ io.on('connection', function(socket) {
         serialport.list(function (err, ports) {
             var port_list = [];
             ports.forEach(function(port) {
-                if (port.manufacturer != "rESC Virtual COM Port")
+                if (port.manufacturer != "Infinity Virtual COM Port")
                     return;
                 port_list.push(port.comName);
                 console.log(port.comName);

@@ -1,7 +1,7 @@
 {
-  "name": "resc-gui",
+  "name": "infinity-dashboard",
   "version": "1.0.0",
-  "description": "GUI for rESC",
+  "description": "Dashboard for Infinity ESCs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raphaelchang/resc-gui.git"
+    "url": "git+https://github.com/raphaelchang/infinity-dashboard.git"
   },
   "author": "Raphael Chang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/raphaelchang/resc-gui/issues"
+    "url": "https://github.com/raphaelchang/infinity-dashboard/issues"
   },
-  "homepage": "https://github.com/raphaelchang/resc-gui#readme",
+  "homepage": "https://github.com/raphaelchang/infinity-dashboard#readme",
   "dependencies": {
     "better-console": "^0.2.4",
     "compression": "^1.6.2",

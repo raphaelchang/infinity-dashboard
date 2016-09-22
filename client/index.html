@@ -1,11 +1,18 @@
 <!doctype html>
 <html>
     <head>
-        <title>rESC GUI</title>
+        <title>Infinity Dashboard</title>
         <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
         <link rel="stylesheet" type="text/css" href="rickshaw/rickshaw.min.css">
         <link rel="stylesheet" type="text/css" href="weather-icons/css/weather-icons.min.css">
+        <link rel="stylesheet" type="text/css" href="infinity-font/css/Infinity.css">
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/manifest.json">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="theme-color" content="#ffffff">
         <script src="jquery-1.10.2.min.js"></script>
         <script src="semantic/dist/semantic.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -15,40 +22,45 @@
         <script src="client.js"></script>
     </head>
     <body>
-        <div id="container">
-            <h1 class="ui header">rESC GUI</h1>
+        <div id="header" class="ui bottom attached inverted segment">
+            <div id="headerwrap" class="ui container">
+                <h1 id="logo" class="ui inverted header"><i class="icon icon-infinity" style="margin-top: -5px; margin-right: 3px; font-size: 34pt"></i>infinity</h1>
+                <div class="ui divider" style="margin: 0"></div>
+                <div id="menu" class="ui inverted secondary pointing menu" style="border: none; padding-bottom: 2px">
+                    <a class="item active" data-tab="overview"><i class="dashboard icon"></i> Overview</a>
+                    <a class="item" data-tab="motor"><i class="settings icon"></i> Motor Settings</a>
+                    <a class="item" data-tab="control"><i class="game icon"></i> Control Settings</a>
+                    <a class="item" data-tab="data"><i class="line chart icon"></i> Real-time Data</a>
+                    <a class="item" data-tab="console"><i class="terminal icon"></i> Console</a>
+                </div>
+            </div>
+        </div>
+        <div id="container" class="ui container">
             <div class="ui grid">
                 <div class="twelve wide column">
-                    <div class="ui top attached tabular menu">
-                        <a class="item active" data-tab="overview"><i class="dashboard icon"></i> Overview</a>
-                        <a class="item" data-tab="motor"><i class="settings icon"></i> Motor Settings</a>
-                        <a class="item" data-tab="control"><i class="game icon"></i> Control Settings</a>
-                        <a class="item" data-tab="data"><i class="line chart icon"></i> Real-time Data</a>
-                        <a class="item" data-tab="console"><i class="terminal icon"></i> Console</a>
-                    </div>
-                    <div class="ui bottom attached tab segment active" data-tab="overview">
+                    <div class="ui attached blue tab segment active" data-tab="overview">
                         <div class="ui input">
                             <input id="input" type="text" size="100" />
                         </div>
                     </div>
-                    <div class="ui bottom attached tab segment" data-tab="motor">
+                    <div class="ui blue tab segment" data-tab="motor" style="margin-top: 0; border-radius: 0; box-shadow: none">
                     </div>
-                    <div class="ui bottom attached tab segment" data-tab="control">
+                    <div class="ui blue tab segment" data-tab="control" style="margin-top: 0; border-radius: 0; box-shadow: none">
                     </div>
-                    <div class="ui bottom attached tab segment" data-tab="data">
+                    <div class="ui blue tab segment" data-tab="data" style="margin-top: 0; border-radius: 0; box-shadow: none">
                         <div id="y_axis_left"></div>
                         <div id="graph"></div>
                         <div id="y_axis_right"></div>
                     </div>
-                    <div class="ui bottom attached tab segment" data-tab="console">
+                    <div class="ui blue tab segment" data-tab="console" style="margin-top: 0; border-radius: 0; box-shadow: none">
                         <div id="console" tabindex="0">
                             <div id="output"></div>
                             <div id="cmd"><span id="input"><span class="cursor noblink">&nbsp;</span></span></div>
                         </div>
                     </div>
                 </div>
-                <div class="four wide column" style="margin-top: 42px">
-                    <div class="ui attached segment">
+                <div class="four wide column">
+                    <div class="ui attached blue segment" style="border-top: 2px solid #009FDA">
                         <div class="ui grid">
                             <div class="sixteen wide column">
                                 <div class="ui fluid selection dropdown" id="ports" style="margin-bottom: 0.73em">

@@ -2,6 +2,8 @@
 {
 	padding: 30px;
 	margin: 0 auto;
+        padding-top: 15px;
+        width: 1200px;
 }
 
 #console
@@ -12,6 +14,43 @@
 	word-wrap: break-word;
 	font-family: courier;
 	outline: none;
+}
+
+#header
+{
+    background-color: #202539;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0px;
+    border-radius: 0;
+}
+
+#headerwrap
+{
+    width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
+#logo
+{
+    font-family: 'Trebuchet MS';
+    font-weight: normal;
+    font-style: italic;
+    font-size: 20pt;
+    padding-top: 5px;
+    color: #CFFAFF;
+    letter-spacing: 1px;
+    -webkit-font-smoothing: antialiased;
+}
+
+#menu>.item.active
+{
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-bottom-color: #BFFAFF!important;
 }
 
 .cursor
