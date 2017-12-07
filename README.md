@@ -1,4 +1,6 @@
-# infinity-dashboard
+<img align="right" height="110" src="https://raphaelchang.com/wp-content/uploads/Infinity.png">
+
+# Infinity Dashboard
 How to run:  
 1. [Install Node.js](https://nodejs.org/en/download/)  
 2. Clone this repository and navigate into the repository directory  
