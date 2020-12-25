@@ -6,6 +6,8 @@
         <link rel="stylesheet" type="text/css" href="rickshaw/rickshaw.min.css">
         <link rel="stylesheet" type="text/css" href="weather-icons/css/weather-icons.min.css">
         <link rel="stylesheet" type="text/css" href="infinity-font/css/Infinity.css">
+        <link rel="stylesheet" type="text/css" href="electric-font/css/electric.css">
+        <link rel="stylesheet" type="text/css" href="circuit-font/style.css">
         <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -30,6 +32,7 @@
                     <a class="item active" data-tab="overview"><i class="dashboard icon"></i> Overview</a>
                     <a class="item" data-tab="motor"><i class="settings icon"></i> Motor Settings</a>
                     <a class="item" data-tab="control"><i class="game icon"></i> Control Settings</a>
+                    <a class="item" data-tab="misc"><i class="options icon"></i> Miscellaneous Settings</a>
                     <a class="item" data-tab="data"><i class="line chart icon"></i> Real-time Data</a>
                     <a class="item" data-tab="console"><i class="terminal icon"></i> Console</a>
                 </div>
@@ -39,20 +42,247 @@
             <div class="ui grid">
                 <div class="twelve wide column">
                     <div class="ui attached blue tab segment active" data-tab="overview">
-                        <div class="ui input">
-                            <input id="input" type="text" size="100" />
+                    </div>
+                    <div class="ui tab grid" data-tab="motor">
+                        <div class="stretched row">
+                            <div class="two wide column">
+                                <div class="ui secondary vertical labeled icon menu">
+                                    <a class="item active" data-tab="limits"><i class="protect icon"></i>Limits</a>
+                                    <a class="item" data-tab="motor-param" style="padding-left: 2px; padding-right: 2px"><i id="sidebar-motor-icon" class="icon-electric-motor icon"></i>Motor Parameters</a>
+                                    <a class="item" data-tab="sensor"><i class="rotated wifi icon"></i>Sensor</a>
+                                    <a class="item" data-tab="controller"><i class="retweet icon"></i>Control Loops</a>
+                                    <a class="item" data-tab="advanced"><i class="configure icon"></i>Advanced</a>
+                                </div>
+                            </div>
+                            <div class="fourteen wide column">
+                                <div class="ui tab grid active" data-tab="limits">
+                                    <div class="stretched row">
+                                    <div class="ten wide column">
+                                    <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                                        <div class="ui tiny header"><i class="lightning icon"></i>Current Limits</div>
+                                        <i id="battery-icon" class="icon icon-electric-battery" style="position: absolute; top: 40px; left: 10px; font-size: 70pt; opacity: 0.5"></i>
+                                        <i id="right-icon" class="long right arrow icon" style="position: absolute; left: 176px; top: 40px; font-size: 60pt; opacity: 0.5"></i>
+                                        <i id="left-icon" class="long left arrow icon" style="position: absolute; left: 173px; top: 70px; font-size: 60pt; opacity: 0.5"></i>
+                                        <i id="motor-icon" class="icon icon-electric-motor" style="position: absolute; top: 40px; right: 30px; font-size: 70pt; opacity: 0.5"></i>
+                                        <div class="ui grid" style="margin-top: 120px">
+                                            <div class="eight wide column">
+                                                <div class="ui form">
+                                                    <div class="field">
+                                                        <label>
+                                                        Maximum Battery Current
+                                                        <i class="help circle icon link" data-content="Maximum current that can be drawn from the battery. This value should be less than or equal to the motor current. The ratio of the battery to motor current limit will determine the motor speed at which this parameter takes effect." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="batt-max" type="number">
+                                                            <div class="ui basic label">
+                                                                A
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>
+                                                        Minimum Battery Current
+                                                        <i class="help circle icon link" data-content="Maximum current that can be regenerated into the battery. This value should be negative." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="batt-min" type="number">
+                                                            <div class="ui basic label">
+                                                                A
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="eight wide column">
+                                                <div class="ui form">
+                                                    <div class="field">
+                                                        <label>
+                                                        Maximum Motor Current
+                                                        <i class="help circle icon link" data-content="Maximum current that the motor can use. This value directly limits the acceleration torque." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="motor-max" type="number">
+                                                            <div class="ui basic label">
+                                                                A
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>
+                                                        Minimum Motor Current
+                                                        <i class="help circle icon link" data-content="Maximum regeneration current that the motor can generate. This value directly limits the braking torque. This values should be negative." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="motor-min" type="number">
+                                                            <div class="ui basic label">
+                                                                A
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="six wide column">
+                                    <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                                        <div class="ui tiny header"><i class="high battery icon"></i>Voltage Limits</div>
+                                        <div class="ui grid">
+                                            <div class="five wide column">
+                                                <i id="v-lim-icon" class="counterclockwise rotated full battery icon" style="font-size: 60pt; position: absolute; top: 50px; left: -13px; opacity: 0.5"></i>
+                                                <i class="counterclockwise rotated low battery icon" style="font-size: 60pt; position: absolute; top: 50px; left: -13px; opacity: 1.0"></i>
+                                            </div>
+                                            <div class="eleven wide column">
+                                                <div class="ui form">
+                                                    <div class="field">
+                                                        <label>
+                                                        High Voltage Limit
+                                                        <i class="help circle icon link" data-content="Maximum battery voltage allowed. Set this value to the fully charged battery voltage to prevent overcharging during regen." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="hv-lim" type="number">
+                                                            <div class="ui basic label">
+                                                                V
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>
+                                                        Low Voltage Limit
+                                                        <i class="help circle icon link" data-content="Minimum battery voltage allowed. Set this value to the low voltage cutoff of the battery to prevent over-discharging." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled fluid input">
+                                                            <input id="lv-lim" type="number">
+                                                            <div class="ui basic label">
+                                                                V
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    <div class="six wide column">
+                                    <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                                        <div class="ui tiny header">        
+                                            <i class="wi wi-thermometer middle aligned icon" style="font-family: weathericons"></i>Temperature Limits</div>
+                                                <div class="ui form">
+                                                    <div class="field">
+                                                        <label>
+                                                        Board Temperature Limit
+                                                        <i class="help circle icon link" data-content="Board temperature at which current limiting will begin to prevent MOSFET overheating." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled input">
+                                                            <input id="board-temp-lim" type="number">
+                                                            <div class="ui basic label">
+                                                                &#8451;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>
+                                                        Motor Temperature Limit
+                                                        <i class="help circle icon link" data-content="Motor temperature at which current limiting will begin to prevent damage to the motor." data-offset="-12"></i>
+                                                        </label>
+                                                        <div class="ui right labeled input">
+                                                            <input id="motor-temp-lim" type="number">
+                                                            <div class="ui basic label">
+                                                                &#8451;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui tab grid" style="margin-top: 0" data-tab="motor-param">
+                                    <div class="sixteen wide column" style="padding-top: 0">
+                                        <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                                        <div class="ui tiny header">        
+                                            <i class="icon icon-electric-motor"></i>Motor Parameters</div>
+                                            <i id="motor-res-icon" class="icon icon-circuit-resistor" style="font-size: 28pt; position: absolute; top: 86px; left: 31px; opacity: 0.5"></i>
+                                            <i id="motor-ind-icon" class="icon icon-circuit-inductor" style="font-size: 16pt; position: absolute; top: 85px; left: 245px; opacity: 0.5"></i>
+                                            <i id="motor-linkage-icon" class="icon rotated icon-circuit-voltage" style="font-size: 180pt; position: absolute; top: -15.5px; left: 450px; opacity: 0.5"></i>
+                                            <div class="ui three column grid" style="margin-top: 130px">
+                                                <div class="stretched row">
+                                                    <div class="column">
+                                                    <div class="ui form">
+                                                        <div class="field">
+                                                            <label>
+                                                            Motor Winding Resistance
+                                                            <i class="help circle icon link" data-content="Effective series resistance for the motor winding. Use the auto-detection tool to measure this value." data-offset="-12"></i>
+                                                            </label>
+                                                            <div class="ui right labeled fluid input">
+                                                                <input id="motor-res" type="number">
+                                                                <div class="ui basic label">
+                                                                    &#937;
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                    <div class="ui form">
+                                                        <div class="field">
+                                                            <label>
+                                                            Motor Winding Inductance
+                                                            <i class="help circle icon link" data-content="Inductance of the motor winding. Use the auto-detection tool to measure this value." data-offset="-12"></i>
+                                                            </label>
+                                                            <div class="ui right labeled fluid input">
+                                                                <input id="motor-ind" type="number">
+                                                                <div class="ui basic label">
+                                                                    uH
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                    <div class="ui form">
+                                                        <div class="field">
+                                                            <label>
+                                                            Motor Flux Linkage
+                                                            <i class="help circle icon link" data-content="The flux linkage (back-EMF constant) of the motor, which is related to kV. Use the auto-detection tool to measure this value." data-offset="-12"></i>
+                                                            </label>
+                                                            <div class="ui right labeled fluid input">
+                                                                <input id="motor-linkage" type="number">
+                                                                <div class="ui basic label">
+                                                                    V/(rad/s)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="ui blue tab segment" data-tab="motor" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                    <div class="ui tab grid" data-tab="control">
+                        <div class="stretched row">
+                        <div class="eight wide column">
+                        <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                        </div>
+                        </div>
+                        <div class="eight wide column">
+                        <div class="ui blue segment" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                        </div>
+                        </div>
+                        </div>
                     </div>
-                    <div class="ui blue tab segment" data-tab="control" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                    <div class="ui blue tab segment" data-tab="misc" style="margin-top: 0; border-radius: 0; box-shadow: none">
                     </div>
                     <div class="ui blue tab segment" data-tab="data" style="margin-top: 0; border-radius: 0; box-shadow: none">
                         <div id="y_axis_left"></div>
                         <div id="graph"></div>
                         <div id="y_axis_right"></div>
                     </div>
-                    <div class="ui blue tab segment" data-tab="console" style="margin-top: 0; border-radius: 0; box-shadow: none">
+                    <div class="ui blue tab segment" data-tab="console" style="margin-top: 0; border-radius: 0; box-shadow: none; margin-bottom: 1rem">
                         <div id="console" tabindex="0">
                             <div id="output"></div>
                             <div id="cmd"><span id="input"><span class="cursor noblink">&nbsp;</span></span></div>
@@ -65,17 +295,23 @@
                             <div class="sixteen wide column">
                                 <div class="ui fluid selection dropdown" id="ports" style="margin-bottom: 0.73em">
                                     <i class="usb icon"></i>
-                                    <span class="text">Select Port...</span>
+                                    <span id="select-port" class="text">Select Port...</span>
                                     <i class="dropdown icon" style="background-color: white"></i>
                                     <div class="menu"></div>
                                 </div>
-                                <div class="ui labeled icon button" id="connect"><i class="plug icon"></i><span>Connect</span></div><div class="ui icon button" id="listports"><i class="refresh icon"></i></div><br />
+                                <div class="ui basic buttons">
+                                <div class="ui button" id="connect"><i class="plug icon"></i><span>Connect</span></div><div class="ui icon button" id="listports"><i class="refresh icon"></i></div>
+                                </div>
                             </div>
                             <div class="sixteen wide column">
-                                <h4 id="status" class="ui header"><i class="grey circle icon"></i><div class="content">Not Connected</div></h4>
-                            </div>
-                            <div class="sixteen wide column">
+                                <h4 id="status" class="ui header"><i class="grey circle icon" style="font-size: 2em; width: 30px"></i><div class="content">Not Connected<div class="sub header"></div></div></h4>
                                 <div class="ui relaxed list">
+                                    <div class="item">
+                                        <i class="tag middle aligned icon"></i>
+                                        <div class="content">
+                                            Firmware Version: <span id="version">0.0</span>
+                                        </div>
+                                    </div>
                                     <div class="item">
                                         <i class="lightning middle aligned icon"></i>
                                         <div class="content">
@@ -94,6 +330,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="footer" class="ui horizontal divider" style="margin-top: 15px"><i class="icon icon-infinity" id="footer-logo"></i></div>
+            <div class="ui basic small modal" style="text-align: center">
+                <h1 class="ui header" style="margin: 0 auto; display: inline-block; text-align: left"><i class="warning sign icon" style="font-size: 40pt"></i><div class="content" style="font-size: 16pt">Server Connection Lost<div class="sub header" style="color: white">Please restart the server.</div></div></h1>
             </div>
     </body>
 </html>

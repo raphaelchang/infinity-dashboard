@@ -23,20 +23,19 @@ io.on('connection', function(socket) {
             ports.forEach(function(port) {
                 if (port.manufacturer != "Infinity Virtual COM Port")
                     return;
-                port_list.push(port.comName);
+                port_list.push(port);
                 console.log(port.comName);
             });
             socket.emit('list ports', {list: port_list});
         });
     });
     usb.on('detach', function(device) {
-        console.log('device disconnected');
         serialport.list(function (err, ports) {
             var port_list = [];
             ports.forEach(function(port) {
                 if (port.manufacturer != "Infinity Virtual COM Port")
                     return;
-                port_list.push(port.comName);
+                port_list.push(port);
                 console.log(port.comName);
             });
             socket.emit('list ports', {list: port_list});
@@ -154,8 +153,7 @@ io.on('connection', function(socket) {
 	    var run = setInterval(requestData, 100);
             port.on('data', function(data)
                     {
-                        console.log(data);
-                        console.log(hexString(data.slice(2)));
+                        //console.log(data);
                         if (data[0] == Cmd.START && data[1] == Cmd.PACKET_CONSOLE)
                         {
                             socket.emit('serial receive', hexString(data.slice(2, -1)));
@@ -171,10 +169,14 @@ io.on('connection', function(socket) {
 			    var curr_q = f32bit_double(values[2]);
 			    var curr_d = f32bit_double(values[3]);
 			    var erpm = f32bit_double(values[4]);
+			    var command = f32bit_double(values[5]);
+			    var state = uint8[25];
+			    var fault = uint8[27];
                             data = {current_q: curr_q, current_d: curr_d, erpm: erpm};
                             socket.emit('graph', data);
                             socket.emit('voltage', voltage);
                             socket.emit('temperature', temp);
+                            socket.emit('status_update', {command: command, state: state, fault: fault});
                         }
                     });
             socket.on('disconnect', function()
